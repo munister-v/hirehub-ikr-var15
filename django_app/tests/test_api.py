@@ -1,6 +1,5 @@
 """REST API: JWT, права за ролями, фільтри, дії, формат помилок, OpenAPI."""
 import pytest
-
 from jobs.models import Application, Vacancy
 
 pytestmark = pytest.mark.django_db

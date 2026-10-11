@@ -7,7 +7,6 @@ import pytest
 import respx
 from django.core.management import call_command
 from django.utils import timezone
-
 from jobs.models import Application, Candidate, Category, City, Skill, Vacancy
 
 pytestmark = pytest.mark.django_db

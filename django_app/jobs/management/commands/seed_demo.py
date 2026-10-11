@@ -7,6 +7,7 @@
 import random
 from datetime import timedelta
 
+from accounts.roles import CANDIDATE_GROUP, EMPLOYER_GROUP, ensure_groups
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
@@ -14,9 +15,18 @@ from django.db import transaction
 from django.test.utils import override_settings
 from django.utils import timezone
 
-from accounts.roles import CANDIDATE_GROUP, EMPLOYER_GROUP, ensure_groups
-from jobs.models import (Application, Candidate, CandidateSkill, Category, City, Company, Interview, Skill,
-                         Vacancy, VacancySkill)
+from jobs.models import (
+    Application,
+    Candidate,
+    CandidateSkill,
+    Category,
+    City,
+    Company,
+    Interview,
+    Skill,
+    Vacancy,
+    VacancySkill,
+)
 
 CITIES = ['Київ', 'Львів', 'Дніпро', 'Одеса', 'Харків', 'Ірпінь']
 CATEGORIES = ['Розробка ПЗ', 'Дизайн', 'Маркетинг', 'Продажі', 'Підтримка клієнтів', 'Аналітика даних']

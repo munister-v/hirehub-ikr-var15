@@ -1,9 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
+from jobs.models import Application, Candidate, CandidateSkill, Category, City, Interview, Skill, Vacancy, VacancySkill
 from rest_framework import serializers
-
-from jobs.models import (Application, Candidate, CandidateSkill, Category, City, Interview, Skill, Vacancy,
-                         VacancySkill)
 
 
 class CitySerializer(serializers.ModelSerializer):

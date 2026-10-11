@@ -1,6 +1,5 @@
 """Повна переіндексація Matching Service: python manage.py reindex_matching"""
 from django.core.management.base import BaseCommand
-
 from integration.tasks import reindex_all
 
 

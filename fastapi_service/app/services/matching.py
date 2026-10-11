@@ -3,8 +3,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import NotFoundError
 from app.repositories.index import CandidateIndexRepository, VacancyIndexRepository
-from app.schemas.matching import (CandidateMatch, CandidatesResponse, ExplainResponse, Metric, SkillComparison,
-                                  VacanciesResponse, VacancyMatch)
+from app.schemas.matching import (
+    CandidateMatch,
+    CandidatesResponse,
+    ExplainResponse,
+    Metric,
+    SkillComparison,
+    VacanciesResponse,
+    VacancyMatch,
+)
 from app.services import scoring
 
 

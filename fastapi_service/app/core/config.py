@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file='.env', env_prefix='MATCHING_', extra='ignore')
 
     app_name: str = 'HireHub Matching Service'
+    # префікс, під яким сервіс видно за reverse proxy (nginx: /matching); потрібен лише для /docs і OpenAPI
+    root_path: str = ''
     database_url: str = 'sqlite+aiosqlite:///./matching.db'
     # Спільний секрет JWT із Django. Назва змінної без префікса — така сама, як у Django.
     jwt_secret: str = Field(default='dev-shared-jwt-secret-change-me-32chars', validation_alias='SHARED_JWT_SECRET')

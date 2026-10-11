@@ -1,8 +1,10 @@
 """REST API (DRF): ViewSet-и, дії (@action), права за ролями, фільтрація, пошук, пагінація."""
+from accounts.roles import is_candidate, is_employer
 from django.db import transaction
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
+from integration.services import recommended_candidates, recommended_vacancies
+from jobs.models import Application, Candidate, Category, City, Interview, Skill, Vacancy
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -10,15 +12,18 @@ from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from accounts.roles import is_candidate, is_employer
-from integration.services import recommended_candidates, recommended_vacancies
-from jobs.models import Application, Candidate, Category, City, Interview, Skill, Vacancy
-
 from .filters import ApplicationFilter, VacancyFilter
 from .permissions import IsCandidate, IsEmployer, IsVacancyOwnerOrReadOnly
-from .serializers import (ApplicationSerializer, ApplicationStatusSerializer, CandidateSerializer,
-                          CategorySerializer, CitySerializer, InterviewSerializer, SkillSerializer,
-                          VacancySerializer)
+from .serializers import (
+    ApplicationSerializer,
+    ApplicationStatusSerializer,
+    CandidateSerializer,
+    CategorySerializer,
+    CitySerializer,
+    InterviewSerializer,
+    SkillSerializer,
+    VacancySerializer,
+)
 
 
 class LoginTokenView(TokenObtainPairView):
