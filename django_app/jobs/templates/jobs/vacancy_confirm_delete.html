@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}Видалення вакансії{% endblock %}
+{% block content %}
+<div class="card"><h1>Видалити вакансію «{{ object.title }}»?</h1>
+<p>Разом із вакансією буде видалено всі заявки та співбесіди. Дію не можна скасувати.</p>
+<form method="post">{% csrf_token %}<input class="btn danger" type="submit" value="Так, видалити">
+<a class="btn secondary" href="{{ object.get_absolute_url }}">Скасувати</a></form></div>
+{% endblock %}

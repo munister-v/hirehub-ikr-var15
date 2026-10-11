@@ -1,0 +1,36 @@
+{% extends "base.html" %}{% block title %}{{ vacancy.title }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>{{ vacancy.title }}</h1>
+  <div class="meta">{{ vacancy.company.name }}{% if vacancy.city %} · {{ vacancy.city.name }}{% endif %} · {{ vacancy.category.name }}
+    · {{ vacancy.get_work_format_display }} · статус: <b>{{ vacancy.get_status_display }}</b>
+    {% if vacancy.salary_min or vacancy.salary_max %} · {% if vacancy.salary_min %}від {{ vacancy.salary_min }}{% endif %}{% if vacancy.salary_max %} до {{ vacancy.salary_max }}{% endif %} грн{% endif %}
+    {% if vacancy.closes_at %} · заявки до {{ vacancy.closes_at|date:"d.m.Y" }}{% endif %}</div>
+  <p>{{ vacancy.description|linebreaksbr }}</p>
+  <div>{% for vs in vacancy.vacancy_skills.all %}<span class="tag">{{ vs.skill.name }} · рівень {{ vs.level }}</span>{% endfor %}</div>
+  {% if is_owner %}<p style="margin-top:14px">
+    <a class="btn" href="{% url 'jobs:vacancy_update' vacancy.pk %}">Редагувати</a>
+    <a class="btn secondary" href="{% url 'jobs:vacancy_applications' vacancy.pk %}">Заявки ({{ applications_count }})</a>
+    <a class="btn danger" href="{% url 'jobs:vacancy_delete' vacancy.pk %}">Видалити</a></p>{% endif %}
+</div>
+
+{% if application %}
+  <div class="card">Ви подали заявку: <span class="status {{ application.status }}">{{ application.get_status_display }}</span></div>
+{% elif can_apply %}
+  <div class="card"><h2 style="margin-top:0">Подати заявку</h2>
+    <form method="post" action="{% url 'jobs:vacancy_apply' vacancy.pk %}">{% csrf_token %}{{ apply_form.as_p }}
+      <input type="submit" value="Надіслати заявку"></form></div>
+{% elif user.is_authenticated and user.candidate and not vacancy.is_open %}
+  <div class="card">Вакансія закрита й не приймає заявок.</div>
+{% elif not user.is_authenticated %}
+  <div class="card"><a href="{% url 'accounts:login' %}?next={{ request.path }}">Увійдіть як кандидат</a>, щоб подати заявку.</div>
+{% endif %}
+
+{% if is_owner %}
+<div class="card"><h2 style="margin-top:0">Рекомендовані кандидати <span class="meta">(Matching Service, коеф. Жаккара)</span></h2>
+  {% for r in recommended %}
+    <p><b>{{ r.full_name }}</b> — {{ r.score_percent }}% · <span class="meta">{{ r.headline }}</span><br>
+      {% for s in r.matched %}<span class="tag ok">{{ s }}</span>{% endfor %}{% for s in r.missing %}<span class="tag miss">немає: {{ s }}</span>{% endfor %}</p>
+  {% empty %}<p class="meta">Рекомендацій поки немає (сервіс недоступний або немає збігів).</p>{% endfor %}
+</div>{% endif %}
+{% endblock %}

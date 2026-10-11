@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% block title %}Вакансії{% endblock %}
+{% block content %}
+<div class="grid">
+  <aside>
+    <form method="get" class="card">
+      <p><label>Пошук</label><input type="text" name="q" value="{{ params.q }}" placeholder="Назва, компанія, опис"></p>
+      <p><label>Місто</label><select name="city"><option value="">Усі</option>
+        {% for c in cities %}<option value="{{ c.pk }}" {% if params.city == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></p>
+      <p><label>Категорія</label><select name="category"><option value="">Усі</option>
+        {% for c in categories %}<option value="{{ c.pk }}" {% if params.category == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></p>
+      <p><label>Формат роботи</label><select name="work_format"><option value="">Будь-який</option>
+        {% for val, label in work_formats %}<option value="{{ val }}" {% if params.work_format == val %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></p>
+      <p><label>Зарплата від, грн</label><input type="number" name="salary_from" value="{{ params.salary_from }}" min="0"></p>
+      <p><label>Навички (через кому)</label><input type="text" name="skill" value="{{ params.skill }}" placeholder="Python, Django"></p>
+      <input type="submit" value="Знайти"> <a class="btn secondary" href="{% url 'jobs:vacancy_list' %}">Скинути</a>
+    </form>
+  </aside>
+  <section>
+    <h1>Вакансії <span class="meta">({{ total }})</span></h1>
+    {% for v in vacancies %}{% include "jobs/_vacancy_card.html" %}
+    {% empty %}<div class="card">За вашим запитом вакансій не знайдено.</div>{% endfor %}
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pager">
+      {% if page_obj.has_previous %}<a class="btn secondary" href="?{% for k, val in params.items %}{{ k }}={{ val|urlencode }}&{% endfor %}page={{ page_obj.previous_page_number }}">← Назад</a>{% endif %}
+      <span class="meta">Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}<a class="btn secondary" href="?{% for k, val in params.items %}{{ k }}={{ val|urlencode }}&{% endfor %}page={{ page_obj.next_page_number }}">Далі →</a>{% endif %}
+    </div>{% endif %}
+  </section>
+</div>
+{% endblock %}

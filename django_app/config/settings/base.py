@@ -145,7 +145,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 # ---------------------------------------------------------------- Celery
-CELERY_BROKER_URL = env('CELERY_BROKER_URL', default=REDIS_URL or 'memory://')
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default=REDIS_URL or 'memory://localhost/')
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='cache+memory://')
 # без брокера (локальна розробка, тести) завдання виконуються одразу, в процесі
 CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=not REDIS_URL)
