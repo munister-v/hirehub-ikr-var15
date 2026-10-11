@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.security import get_principal
+from app.core.security import require_roles
 from app.db.session import get_session
 from app.schemas.matching import CandidatesResponse, ExplainResponse, Metric, VacanciesResponse
 from app.services.matching import MatchingService
 
 # читати підбір може будь-який автентифікований користувач (viewer, service, admin)
-router = APIRouter(prefix='/match', tags=['match'], dependencies=[Depends(get_principal)])
+router = APIRouter(prefix='/match', tags=['match'], dependencies=[Depends(require_roles('admin', 'service', 'viewer'))])
 
 
 @router.get('/vacancy/{vacancy_id}/candidates', response_model=CandidatesResponse)

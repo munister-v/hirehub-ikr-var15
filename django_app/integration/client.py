@@ -80,3 +80,12 @@ class MatchingClient:
 
 def get_client() -> MatchingClient:
     return MatchingClient()
+
+
+def candidate_ws_token(candidate_id: int, ttl=600) -> str:
+    """Короткоживучий токен, який браузер кандидата передає у WebSocket Matching Service."""
+    from django.conf import settings as dj_settings
+    now = int(time.time())
+    payload = {'sub': f'candidate:{candidate_id}', 'role': 'candidate', 'candidate_id': candidate_id,
+               'iss': 'hirehub-django', 'iat': now, 'exp': now + ttl}
+    return jwt.encode(payload, dj_settings.SHARED_JWT_SECRET, algorithm='HS256')
