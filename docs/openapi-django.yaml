@@ -1,0 +1,1442 @@
+openapi: 3.0.3
+info:
+  title: HireHub Django REST API
+  version: 1.0.0
+  description: 'Платформа пошуку роботи та рекрутингу: вакансії, кандидати, заявки,
+    співбесіди.'
+paths:
+  /api/applications/:
+    get:
+      operationId: applications_list
+      description: 'Заявки: кандидат — свої; роботодавець — заявки на свої вакансії;
+        чужі об''єкти недоступні.'
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          title: Статус
+          enum:
+          - interview
+          - offer
+          - rejected
+          - reviewed
+          - submitted
+        description: |-
+          * `submitted` - Подана
+          * `reviewed` - Переглянута
+          * `interview` - Співбесіда
+          * `offer` - Пропозиція
+          * `rejected` - Відмова
+      - in: query
+        name: vacancy
+        schema:
+          type: integer
+      tags:
+      - applications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationList'
+          description: ''
+    post:
+      operationId: applications_create
+      description: 'Заявки: кандидат — свої; роботодавець — заявки на свої вакансії;
+        чужі об''єкти недоступні.'
+      tags:
+      - applications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ApplicationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ApplicationRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+          description: ''
+  /api/applications/{id}/:
+    get:
+      operationId: applications_retrieve
+      description: 'Заявки: кандидат — свої; роботодавець — заявки на свої вакансії;
+        чужі об''єкти недоступні.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this заявка.
+        required: true
+      tags:
+      - applications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+          description: ''
+  /api/applications/{id}/status/:
+    post:
+      operationId: applications_status_create
+      description: 'applications/{id}/status — зміна статусу за графом: подана → переглянута
+        → співбесіда → пропозиція/відмова.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this заявка.
+        required: true
+      tags:
+      - applications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationStatusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ApplicationStatusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ApplicationStatusRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+          description: ''
+  /api/auth/token/:
+    post:
+      operationId: auth_token_create
+      description: Отримання JWT. Окремий ліміт 10 запитів/хв захищає від перебору
+        паролів.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/candidates/:
+    get:
+      operationId: candidates_list
+      description: 'Кандидати: список бачать роботодавці й адміністратор; кандидат
+        керує лише власним профілем (/me/).'
+      parameters:
+      - in: query
+        name: city
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - candidates
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCandidateList'
+          description: ''
+  /api/candidates/{id}/:
+    get:
+      operationId: candidates_retrieve
+      description: 'Кандидати: список бачать роботодавці й адміністратор; кандидат
+        керує лише власним профілем (/me/).'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this кандидат.
+        required: true
+      tags:
+      - candidates
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+          description: ''
+  /api/candidates/me/:
+    get:
+      operationId: candidates_me_retrieve
+      description: 'Кандидати: список бачать роботодавці й адміністратор; кандидат
+        керує лише власним профілем (/me/).'
+      tags:
+      - candidates
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+          description: ''
+    patch:
+      operationId: candidates_me_partial_update
+      description: 'Кандидати: список бачать роботодавці й адміністратор; кандидат
+        керує лише власним профілем (/me/).'
+      tags:
+      - candidates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCandidateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCandidateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCandidateRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+          description: ''
+  /api/candidates/me/recommendations/:
+    get:
+      operationId: candidates_me_recommendations_retrieve
+      description: Рекомендовані вакансії від Matching Service для поточного кандидата.
+      tags:
+      - candidates
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+          description: ''
+  /api/categories/:
+    get:
+      operationId: categories_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: ''
+  /api/categories/{id}/:
+    get:
+      operationId: categories_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this категорія.
+        required: true
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/cities/:
+    get:
+      operationId: cities_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - cities
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
+          description: ''
+  /api/cities/{id}/:
+    get:
+      operationId: cities_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this місто.
+        required: true
+      tags:
+      - cities
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+          description: ''
+  /api/interviews/:
+    get:
+      operationId: interviews_list
+      parameters:
+      - in: query
+        name: application
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - interviews
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInterviewList'
+          description: ''
+    post:
+      operationId: interviews_create
+      tags:
+      - interviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterviewRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InterviewRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InterviewRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interview'
+          description: ''
+  /api/interviews/{id}/:
+    get:
+      operationId: interviews_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this співбесіда.
+        required: true
+      tags:
+      - interviews
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interview'
+          description: ''
+    delete:
+      operationId: interviews_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this співбесіда.
+        required: true
+      tags:
+      - interviews
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/skills/:
+    get:
+      operationId: skills_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - skills
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
+          description: ''
+  /api/skills/{id}/:
+    get:
+      operationId: skills_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this навичка.
+        required: true
+      tags:
+      - skills
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+          description: ''
+  /api/vacancies/:
+    get:
+      operationId: vacancies_list
+      description: Вакансії. Гості й кандидати бачать лише відкриті; роботодавець
+        — відкриті та власні.
+      parameters:
+      - in: query
+        name: category
+        schema:
+          type: integer
+      - in: query
+        name: city
+        schema:
+          type: integer
+      - in: query
+        name: company
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: salary_from
+        schema:
+          type: number
+        description: Зарплата від (верхня межа вакансії ≥)
+      - in: query
+        name: salary_to
+        schema:
+          type: integer
+        description: Зарплата до
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: skills
+        schema:
+          type: string
+        description: Навички через кому
+      - in: query
+        name: status
+        schema:
+          type: string
+          title: Статус
+          enum:
+          - closed
+          - draft
+          - open
+        description: |-
+          * `draft` - Чернетка
+          * `open` - Відкрита
+          * `closed` - Закрита
+      - in: query
+        name: work_format
+        schema:
+          type: string
+          title: Формат роботи
+          enum:
+          - hybrid
+          - office
+          - remote
+        description: |-
+          * `office` - Офіс
+          * `remote` - Віддалено
+          * `hybrid` - Гібрид
+      tags:
+      - vacancies
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVacancyList'
+          description: ''
+    post:
+      operationId: vacancies_create
+      description: Вакансії. Гості й кандидати бачать лише відкриті; роботодавець
+        — відкриті та власні.
+      tags:
+      - vacancies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VacancyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VacancyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VacancyRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vacancy'
+          description: ''
+  /api/vacancies/{id}/:
+    get:
+      operationId: vacancies_retrieve
+      description: Вакансії. Гості й кандидати бачать лише відкриті; роботодавець
+        — відкриті та власні.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this вакансія.
+        required: true
+      tags:
+      - vacancies
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vacancy'
+          description: ''
+    put:
+      operationId: vacancies_update
+      description: Вакансії. Гості й кандидати бачать лише відкриті; роботодавець
+        — відкриті та власні.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this вакансія.
+        required: true
+      tags:
+      - vacancies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VacancyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VacancyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VacancyRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vacancy'
+          description: ''
+    patch:
+      operationId: vacancies_partial_update
+      description: Вакансії. Гості й кандидати бачать лише відкриті; роботодавець
+        — відкриті та власні.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this вакансія.
+        required: true
+      tags:
+      - vacancies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVacancyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVacancyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVacancyRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vacancy'
+          description: ''
+    delete:
+      operationId: vacancies_destroy
+      description: Вакансії. Гості й кандидати бачать лише відкриті; роботодавець
+        — відкриті та власні.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this вакансія.
+        required: true
+      tags:
+      - vacancies
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/vacancies/{id}/apply/:
+    post:
+      operationId: vacancies_apply_create
+      description: 'Користувацька дія: подати заявку на вакансію від імені поточного
+        кандидата.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this вакансія.
+        required: true
+      tags:
+      - vacancies
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+          description: ''
+  /api/vacancies/{id}/recommendations/:
+    get:
+      operationId: vacancies_recommendations_retrieve
+      description: Топ кандидатів від Matching Service (лише власник вакансії).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this вакансія.
+        required: true
+      tags:
+      - vacancies
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vacancy'
+          description: ''
+components:
+  schemas:
+    Application:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        vacancy:
+          type: integer
+        vacancy_title:
+          type: string
+          readOnly: true
+        candidate:
+          type: integer
+          readOnly: true
+        candidate_name:
+          type: string
+          readOnly: true
+        resume:
+          type: integer
+          nullable: true
+        cover_letter:
+          type: string
+          title: Супровідний лист
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ApplicationStatusEnum'
+          readOnly: true
+          title: Статус
+        status_display:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - candidate
+      - candidate_name
+      - created
+      - id
+      - status
+      - status_display
+      - vacancy
+      - vacancy_title
+    ApplicationRequest:
+      type: object
+      properties:
+        vacancy:
+          type: integer
+        resume:
+          type: integer
+          nullable: true
+        cover_letter:
+          type: string
+          title: Супровідний лист
+      required:
+      - vacancy
+    ApplicationStatusEnum:
+      enum:
+      - submitted
+      - reviewed
+      - interview
+      - offer
+      - rejected
+      type: string
+      description: |-
+        * `submitted` - Подана
+        * `reviewed` - Переглянута
+        * `interview` - Співбесіда
+        * `offer` - Пропозиція
+        * `rejected` - Відмова
+    ApplicationStatusRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ApplicationStatusEnum'
+      required:
+      - status
+    Candidate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        full_name:
+          type: string
+          title: ПІБ
+          maxLength: 200
+        headline:
+          type: string
+          title: Посада / коротко про себе
+          maxLength: 200
+        phone:
+          type: string
+          title: Телефон
+          maxLength: 32
+        city:
+          type: integer
+          nullable: true
+        expected_salary:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          title: Очікувана зарплата
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillLevel'
+      required:
+      - full_name
+      - id
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Назва
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 140
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - id
+      - name
+      - slug
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Місто
+          maxLength: 120
+      required:
+      - id
+      - name
+    Interview:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        application:
+          type: integer
+        scheduled_at:
+          type: string
+          format: date-time
+          title: Дата й час
+        location:
+          type: string
+          title: Місце або посилання
+          maxLength: 255
+        notes:
+          type: string
+          title: Нотатки
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - application
+      - created
+      - id
+      - location
+      - scheduled_at
+    InterviewRequest:
+      type: object
+      properties:
+        application:
+          type: integer
+        scheduled_at:
+          type: string
+          format: date-time
+          title: Дата й час
+        location:
+          type: string
+          minLength: 1
+          title: Місце або посилання
+          maxLength: 255
+        notes:
+          type: string
+          title: Нотатки
+      required:
+      - application
+      - location
+      - scheduled_at
+    PaginatedApplicationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Application'
+    PaginatedCandidateList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Candidate'
+    PaginatedInterviewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Interview'
+    PaginatedVacancyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vacancy'
+    PatchedCandidateRequest:
+      type: object
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          title: ПІБ
+          maxLength: 200
+        headline:
+          type: string
+          title: Посада / коротко про себе
+          maxLength: 200
+        phone:
+          type: string
+          title: Телефон
+          maxLength: 32
+        city:
+          type: integer
+          nullable: true
+        expected_salary:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          title: Очікувана зарплата
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillLevelRequest'
+    PatchedVacancyRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          title: Назва
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+          title: Опис
+        city:
+          type: integer
+          nullable: true
+        category:
+          type: integer
+        salary_min:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          title: Зарплата від
+        salary_max:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          title: Зарплата до
+        work_format:
+          allOf:
+          - $ref: '#/components/schemas/WorkFormatEnum'
+          title: Формат роботи
+        status:
+          allOf:
+          - $ref: '#/components/schemas/VacancyStatusEnum'
+          title: Статус
+        closes_at:
+          type: string
+          format: date
+          nullable: true
+          title: Приймаємо заявки до
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillLevelRequest'
+    Skill:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Навичка
+          maxLength: 80
+      required:
+      - id
+      - name
+    SkillLevel:
+      type: object
+      description: 'Навичка з рівнем: {"skill": "Python", "level": 4} — навичка вказується
+        назвою.'
+      properties:
+        skill:
+          type: string
+          title: Навичка
+        level:
+          type: integer
+          maximum: 5
+          minimum: 1
+      required:
+      - level
+      - skill
+    SkillLevelRequest:
+      type: object
+      description: 'Навичка з рівнем: {"skill": "Python", "level": 4} — навичка вказується
+        назвою.'
+      properties:
+        skill:
+          type: string
+          minLength: 1
+          title: Навичка
+        level:
+          type: integer
+          maximum: 5
+          minimum: 1
+      required:
+      - level
+      - skill
+    TokenObtainPair:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - refresh
+    TokenObtainPairRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+    Vacancy:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Назва
+          maxLength: 200
+        description:
+          type: string
+          title: Опис
+        company:
+          type: integer
+          readOnly: true
+        company_name:
+          type: string
+          readOnly: true
+        city:
+          type: integer
+          nullable: true
+        category:
+          type: integer
+        salary_min:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          title: Зарплата від
+        salary_max:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          title: Зарплата до
+        work_format:
+          allOf:
+          - $ref: '#/components/schemas/WorkFormatEnum'
+          title: Формат роботи
+        status:
+          allOf:
+          - $ref: '#/components/schemas/VacancyStatusEnum'
+          title: Статус
+        closes_at:
+          type: string
+          format: date
+          nullable: true
+          title: Приймаємо заявки до
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillLevel'
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category
+      - company
+      - company_name
+      - created
+      - description
+      - id
+      - title
+    VacancyRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          title: Назва
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+          title: Опис
+        city:
+          type: integer
+          nullable: true
+        category:
+          type: integer
+        salary_min:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          title: Зарплата від
+        salary_max:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          title: Зарплата до
+        work_format:
+          allOf:
+          - $ref: '#/components/schemas/WorkFormatEnum'
+          title: Формат роботи
+        status:
+          allOf:
+          - $ref: '#/components/schemas/VacancyStatusEnum'
+          title: Статус
+        closes_at:
+          type: string
+          format: date
+          nullable: true
+          title: Приймаємо заявки до
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillLevelRequest'
+      required:
+      - category
+      - description
+      - title
+    VacancyStatusEnum:
+      enum:
+      - draft
+      - open
+      - closed
+      type: string
+      description: |-
+        * `draft` - Чернетка
+        * `open` - Відкрита
+        * `closed` - Закрита
+    WorkFormatEnum:
+      enum:
+      - office
+      - remote
+      - hybrid
+      type: string
+      description: |-
+        * `office` - Офіс
+        * `remote` - Віддалено
+        * `hybrid` - Гібрид
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

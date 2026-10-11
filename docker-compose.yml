@@ -2,6 +2,9 @@
 # Вхід:  http://localhost:8080  (сайт) · /api/docs/ (Swagger DRF) · /matching/docs (Swagger FastAPI)
 # Перед запуском: cp .env.example .env  і змініть секрети.
 
+# ім'я проєкту задано явно (тека репозиторію може мати нелатинську назву)
+name: hirehub
+
 x-django-env: &django-env
   DJANGO_SETTINGS_MODULE: config.settings.prod
   DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}

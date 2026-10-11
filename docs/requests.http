@@ -1,0 +1,43 @@
+### Змінні: @django = http://localhost:8080   @matching = http://localhost:8080/matching
+
+### 1. Отримати JWT (Django)
+POST http://localhost:8080/api/auth/token/
+Content-Type: application/json
+
+{"username": "employer1", "password": "demo12345"}
+
+### 2. Список вакансій із фільтром за навичками й зарплатою
+GET http://localhost:8080/api/vacancies/?skills=Python,Django&salary_from=20000&ordering=-created
+
+### 3. Створити вакансію (потрібен Bearer-токен роботодавця)
+POST http://localhost:8080/api/vacancies/
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"title": "FastAPI developer", "description": "Розробка сервісів", "category": 1, "salary_min": 40000,
+ "salary_max": 70000, "status": "open", "skills": [{"skill": "Python", "level": 5}]}
+
+### 4. Змінити статус заявки
+POST http://localhost:8080/api/applications/1/status/
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"status": "reviewed"}
+
+### 5. Рекомендовані кандидати для вакансії (через Django → FastAPI)
+GET http://localhost:8080/api/vacancies/1/recommendations/
+Authorization: Bearer {{token}}
+
+### 6. Matching Service напряму: токен адміністратора FastAPI
+POST http://localhost:8080/matching/auth/token
+Content-Type: application/x-www-form-urlencoded
+
+username=admin&password=<MATCHING_ADMIN_PASSWORD>
+
+### 7. Підбір і пояснення
+GET http://localhost:8080/matching/match/vacancy/1/candidates?metric=cosine&limit=5
+Authorization: Bearer {{matching_token}}
+
+###
+GET http://localhost:8080/matching/match/explain?vacancy_id=1&candidate_id=1
+Authorization: Bearer {{matching_token}}

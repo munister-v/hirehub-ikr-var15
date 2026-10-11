@@ -1,0 +1,381 @@
+{
+  "info": {
+    "name": "HireHub (варіант 15)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "matching_token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Django (DRF)",
+      "item": [
+        {
+          "name": "Отримати JWT",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/api/auth/token/",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "token"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"employer1\",\n  \"password\": \"demo12345\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Вакансії (фільтри)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/vacancies/?skills=Python&salary_from=20000&ordering=-created",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "api",
+                "vacancies",
+                "?skills=Python&salary_from=20000&ordering=-created"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Створити вакансію",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/api/vacancies/",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "api",
+                "vacancies"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"FastAPI developer\",\n  \"description\": \"API\",\n  \"category\": 1,\n  \"salary_min\": 40000,\n  \"salary_max\": 70000,\n  \"status\": \"open\",\n  \"skills\": [\n    {\n      \"skill\": \"Python\",\n      \"level\": 5\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Подати заявку",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/api/vacancies/1/apply/",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "api",
+                "vacancies",
+                "1",
+                "apply"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cover_letter\": \"Привіт\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Змінити статус заявки",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/api/applications/1/status/",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "1",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"reviewed\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Рекомендовані кандидати",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/api/vacancies/1/recommendations/",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "api",
+                "vacancies",
+                "1",
+                "recommendations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "OpenAPI-схема",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/api/schema/",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "api",
+                "schema"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "FastAPI (Matching Service)",
+      "item": [
+        {
+          "name": "Токен (OAuth2 password)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/matching/auth/token",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "matching",
+                "auth",
+                "token"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "admin"
+                },
+                {
+                  "key": "password",
+                  "value": "<MATCHING_ADMIN_PASSWORD>"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/matching/health",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "matching",
+                "health"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Підбір кандидатів (Жаккар)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{matching_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/matching/match/vacancy/1/candidates?limit=5",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "matching",
+                "match",
+                "vacancy",
+                "1",
+                "candidates?limit=5"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Підбір кандидатів (косинус)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{matching_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/matching/match/vacancy/1/candidates?metric=cosine",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "matching",
+                "match",
+                "vacancy",
+                "1",
+                "candidates?metric=cosine"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Рекомендовані вакансії",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{matching_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/matching/match/candidate/1/vacancies",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "matching",
+                "match",
+                "candidate",
+                "1",
+                "vacancies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Пояснення відповідності",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{matching_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/matching/match/explain?vacancy_id=1&candidate_id=1",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "matching",
+                "match",
+                "explain?vacancy_id=1&candidate_id=1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Статистика індексу",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{matching_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base}}/matching/index/stats",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "matching",
+                "index",
+                "stats"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
