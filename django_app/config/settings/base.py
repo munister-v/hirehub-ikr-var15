@@ -13,7 +13,7 @@ for candidate in (BASE_DIR / '.env', BASE_DIR.parent / '.env'):
     if candidate.exists():
         environ.Env.read_env(candidate)
 
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='insecure-dev-key-change-me')
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='insecure-dev-key-change-me-0123456789abcdef')
 DEBUG = env.bool('DJANGO_DEBUG', default=False)
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 CSRF_TRUSTED_ORIGINS = env.list('DJANGO_CSRF_TRUSTED_ORIGINS', default=[])
@@ -142,6 +142,10 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'COMPONENT_SPLIT_REQUEST': True,
+    'ENUM_NAME_OVERRIDES': {
+        'VacancyStatusEnum': 'jobs.models.Vacancy.Status',
+        'ApplicationStatusEnum': 'jobs.models.Application.Status',
+    },
 }
 
 # ---------------------------------------------------------------- Celery
