@@ -1,0 +1,16 @@
+[run]
+source = .
+omit =
+    tests/*
+    */migrations/*
+    manage.py
+    config/wsgi.py
+    config/asgi.py
+    config/settings/dev.py
+    config/settings/prod.py
+    env/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:

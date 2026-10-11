@@ -20,4 +20,22 @@
     {% for s in r.matched %}<span class="tag ok">{{ s }}</span>{% endfor %}{% for s in r.missing %}<span class="tag miss">немає: {{ s }}</span>{% endfor %}</p>
   {% empty %}<p class="meta">Рекомендацій поки немає. Додайте навички у профіль.</p>{% endfor %}
 </div>
+<div id="live-status"><ul class="messages"></ul></div>
+<script>
+// Живі сповіщення про зміну статусу заявки: WebSocket FastAPI-сервісу (токен видає Django)
+(async function () {
+  try {
+    const info = await (await fetch("{% url 'jobs:ws_token' %}")).json();
+    const ws = new WebSocket(info.url + "?token=" + encodeURIComponent(info.token));
+    ws.onmessage = (e) => {
+      const m = JSON.parse(e.data);
+      if (m.type !== "application_status") return;
+      const li = document.createElement("li");
+      li.className = "success";
+      li.textContent = "Заявка на «" + m.vacancy_title + "»: " + m.status_label;
+      document.querySelector("#live-status ul").appendChild(li);
+    };
+  } catch (err) { /* сервіс підбору недоступний — кабінет працює без live-статусів */ }
+})();
+</script>
 {% endblock %}
