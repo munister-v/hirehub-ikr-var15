@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Кабінет роботодавця{% endblock %}
+{% block content %}
+<h1>Кабінет роботодавця: {{ user.company.name }}</h1>
+<p><a class="btn" href="{% url 'jobs:vacancy_create' %}">+ Нова вакансія</a></p>
+<div class="card"><table>
+  <tr><th>Вакансія</th><th>Статус</th><th>Заявок</th><th></th></tr>
+  {% for v in vacancies %}<tr>
+    <td><a href="{{ v.get_absolute_url }}">{{ v.title }}</a><div class="meta">{{ v.category.name }}{% if v.city %} · {{ v.city.name }}{% endif %}</div></td>
+    <td>{{ v.get_status_display }}</td><td>{{ v.apps }}</td>
+    <td><a href="{% url 'jobs:vacancy_applications' v.pk %}">Заявки</a> · <a href="{% url 'jobs:vacancy_update' v.pk %}">Ред.</a></td>
+  </tr>{% empty %}<tr><td colspan="4">Вакансій ще немає.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

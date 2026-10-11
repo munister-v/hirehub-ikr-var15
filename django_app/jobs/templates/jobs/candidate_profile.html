@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Профіль{% endblock %}
+{% block content %}
+<div class="card" style="max-width:640px"><h1>Мій профіль</h1>
+<form method="post">{% csrf_token %}{{ form.as_p }}
+  <h2>Навички (рівень 1–5)</h2>
+  {{ skills_formset.management_form }}
+  {% for f in skills_formset %}<div class="card">{{ f.as_p }}</div>{% endfor %}
+  <input type="submit" value="Зберегти"></form></div>
+{% endblock %}
