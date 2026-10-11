@@ -67,7 +67,7 @@ class Command(BaseCommand):
             created = self._seed(options)
         if created:
             from integration.tasks import reindex_all
-            reindex_all.delay()
+            reindex_all.apply()      # локально й синхронно: не залежить від воркера/брокера
 
     @transaction.atomic
     def _seed(self, options):

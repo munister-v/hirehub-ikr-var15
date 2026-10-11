@@ -24,7 +24,7 @@
 ### Варіант A — повний комплекс у Docker (PostgreSQL, Redis, nginx)
 ```bash
 cp .env.example .env            # змініть секрети
-docker compose up --build
+docker compose up --build       # (або docker-compose up --build, якщо плагін compose v2 не встановлено)
 ```
 Після старту: сайт — http://localhost:8080 · Swagger DRF — http://localhost:8080/api/docs/ ·
 Swagger FastAPI — http://localhost:8080/matching/docs · адмінка — http://localhost:8080/admin/.
@@ -184,4 +184,5 @@ cd fastapi_service && pytest --cov=app   # 34 тести
 | `docs/postman/hirehub.postman_collection.json`, `docs/requests.http` | колекція запитів |
 | `docs/comparison-django-vs-fastapi.md` | порівняльний аналіз |
 | `docs/defence.md` | відповіді на орієнтовні запитання захисту |
-| `docs/checklist.md` | контрольний перелік перед захистом (Додаток А) |
+| `docs/checklist.md` | контрольний перелік перед захистом (Додаток А) зі статусами |
+| `docs/verification.md`, `docs/compose-ps.txt` | журнал перевірки, стан контейнерів, знайдені й виправлені помилки |
