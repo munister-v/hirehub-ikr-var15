@@ -163,16 +163,13 @@ cd fastapi_service && pytest --cov=app   # 34 тести
 Додатково: CSRF для веб-форм; обмеження розміру/типу резюме (розширення + сигнатура + `client_max_body_size`);
 `Content-Disposition: attachment` для `/media/`.
 
-## CI/CD
+## CI/CD та Git
 
-`.github/workflows/ci.yml`: `ruff` → тести Django (+ `makemigrations --check`) → тести FastAPI → `docker compose build`.
-Розгортання на PaaS (ЛР №16) не виконувалось.
-
-## Git
-
-Історія містить змістовні коміти за етапами (каркас, модель, веб, API, FastAPI, інтеграція, тести, Docker, CI, документація);
-робота велася у гілках `feature/*` зі злиттям у `main` через `--no-ff`. Pull request-и можливі лише після публікації
-репозиторію на GitHub.
+* Репозиторій: https://github.com/munister-v/hirehub-ikr-var15 (публічний). Робота велася у гілках `feature/*`; кожну гілку оформлено pull request-ом
+  ([список PR](https://github.com/munister-v/hirehub-ikr-var15/pulls)), PR #1–#8 ланцюжком: кожен базується на попередній гілці.
+* `.github/workflows/ci.yml`: `ruff` → тести Django (+ `makemigrations --check`) → тести FastAPI → `docker compose build`.
+  На PR #7 і #8 усі завдання пройшли успішно.
+* Розгортання на PaaS (ЛР №16) не виконувалось.
 
 ## Документація
 
