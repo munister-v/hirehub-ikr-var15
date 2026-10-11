@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Співбесіда{% endblock %}
+{% block content %}
+<div class="card" style="max-width:560px"><h1>Співбесіда: {{ application.candidate.full_name }}</h1>
+<p class="meta">Вакансія: {{ application.vacancy.title }}</p>
+<form method="post">{% csrf_token %}{{ form.as_p }}<input type="submit" value="Призначити"></form></div>
+{% endblock %}

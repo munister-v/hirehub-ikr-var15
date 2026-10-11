@@ -1,0 +1,35 @@
+{% load static %}<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}HireHub{% endblock %} · HireHub</title>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="{% url 'jobs:vacancy_list' %}">HireHub</a>
+    <nav>
+      <a href="{% url 'jobs:vacancy_list' %}">Вакансії</a>
+      {% if user.is_authenticated %}
+        {% if user.company %}<a href="{% url 'jobs:employer_dashboard' %}">Кабінет роботодавця</a>
+        {% elif user.candidate %}<a href="{% url 'jobs:candidate_cabinet' %}">Кабінет кандидата</a>{% endif %}
+        {% if user.is_staff %}<a href="{% url 'admin:index' %}">Адмінка</a>{% endif %}
+        <a href="/api/docs/">API</a>
+        <form method="post" action="{% url 'accounts:logout' %}" style="display:inline">{% csrf_token %}
+          <button class="btn secondary" type="submit">Вийти ({{ user.username }})</button></form>
+      {% else %}
+        <a href="/api/docs/">API</a>
+        <a href="{% url 'accounts:login' %}">Увійти</a>
+        <a class="btn" href="{% url 'accounts:register' %}">Реєстрація</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+<main>
+  {% if messages %}<ul class="messages">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

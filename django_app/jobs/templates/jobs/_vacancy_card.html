@@ -1,0 +1,6 @@
+<div class="card">
+  <h2 style="margin-top:0"><a href="{{ v.get_absolute_url }}">{{ v.title }}</a></h2>
+  <div class="meta">{{ v.company.name }}{% if v.city %} · {{ v.city.name }}{% endif %} · {{ v.category.name }} · {{ v.get_work_format_display }}
+    {% if v.salary_min or v.salary_max %} · {% if v.salary_min %}від {{ v.salary_min }}{% endif %}{% if v.salary_max %} до {{ v.salary_max }}{% endif %} грн{% endif %}</div>
+  <div>{% for vs in v.vacancy_skills.all %}<span class="tag">{{ vs.skill.name }} · {{ vs.level }}</span>{% endfor %}</div>
+</div>
