@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Вакансія{% endblock %}
+{% block content %}
+<div class="card"><h1>{% if object %}Редагування вакансії{% else %}Нова вакансія{% endif %}</h1>
+<form method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <h2>Вимоги до навичок</h2>
+  {{ skills_formset.management_form }}
+  {% for f in skills_formset %}<div class="card">{{ f.as_p }}</div>{% endfor %}
+  <input type="submit" value="Зберегти"> <a class="btn secondary" href="{% url 'jobs:employer_dashboard' %}">Скасувати</a>
+</form></div>
+{% endblock %}

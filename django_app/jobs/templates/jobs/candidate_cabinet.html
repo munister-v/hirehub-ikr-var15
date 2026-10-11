@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% block title %}Кабінет кандидата{% endblock %}
+{% block content %}
+<h1>Кабінет кандидата: {{ candidate.full_name }}</h1>
+<p><a class="btn" href="{% url 'jobs:candidate_profile' %}">Редагувати профіль і навички</a>
+   <a class="btn secondary" href="{% url 'jobs:resume_create' %}">Завантажити резюме</a></p>
+<div class="card"><h2 style="margin-top:0">Профіль</h2>
+  <p class="meta">{{ candidate.headline }}{% if candidate.city %} · {{ candidate.city.name }}{% endif %}{% if candidate.expected_salary %} · очікує {{ candidate.expected_salary }} грн{% endif %}</p>
+  {% for cs in candidate.candidate_skills.all %}<span class="tag">{{ cs.skill.name }} · {{ cs.level }}</span>{% empty %}<span class="meta">Навичок ще не додано.</span>{% endfor %}
+  <h2>Резюме</h2>{% for r in candidate.resumes.all %}<p><a href="{{ r.file.url }}">{{ r.file.name }}</a> <span class="meta">{{ r.uploaded_at|date:"d.m.Y" }}</span></p>{% empty %}<p class="meta">Резюме не завантажено.</p>{% endfor %}
+</div>
+<div class="card"><h2 style="margin-top:0">Мої заявки</h2>
+  <table>{% for a in applications %}<tr>
+    <td><a href="{{ a.vacancy.get_absolute_url }}">{{ a.vacancy.title }}</a><div class="meta">{{ a.vacancy.company.name }}</div></td>
+    <td><span class="status {{ a.status }}">{{ a.get_status_display }}</span>
+      {% for i in a.interviews.all %}<div class="meta">Співбесіда {{ i.scheduled_at|date:"d.m.Y H:i" }}, {{ i.location }}</div>{% endfor %}</td></tr>
+  {% empty %}<tr><td>Заявок ще немає.</td></tr>{% endfor %}</table>
+</div>
+<div class="card"><h2 style="margin-top:0">Рекомендовані вакансії <span class="meta">(Matching Service)</span></h2>
+  {% for r in recommended %}<p><a href="{{ r.vacancy.get_absolute_url }}">{{ r.vacancy.title }}</a> — {{ r.score_percent }}%<br>
+    {% for s in r.matched %}<span class="tag ok">{{ s }}</span>{% endfor %}{% for s in r.missing %}<span class="tag miss">немає: {{ s }}</span>{% endfor %}</p>
+  {% empty %}<p class="meta">Рекомендацій поки немає. Додайте навички у профіль.</p>{% endfor %}
+</div>
+{% endblock %}
