@@ -2,7 +2,7 @@
 from .base import *  # noqa: F401,F403
 
 DEBUG = False
-SECRET_KEY = 'test-secret-key'
+SECRET_KEY = 'test-secret-key-with-more-than-32-characters'
 SHARED_JWT_SECRET = 'test-shared-jwt-secret-with-32-plus-chars'
 DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': ':memory:'}}
 CACHES = {'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache', 'LOCATION': 'tests'}}
@@ -17,3 +17,4 @@ STORAGES = {
     'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
 }
 REST_FRAMEWORK = {**REST_FRAMEWORK, 'DEFAULT_THROTTLE_CLASSES': ()}  # noqa: F405
+MIDDLEWARE = [m for m in MIDDLEWARE if 'whitenoise' not in m]  # noqa: F405 — статика в тестах не потрібна
