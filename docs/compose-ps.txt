@@ -1,0 +1,8 @@
+SERVICE         IMAGE                   STATUS                        PORTS
+celery_beat     hirehub-celery_beat     Up About a minute             8000/tcp
+celery_worker   hirehub-celery_worker   Up About a minute (healthy)   8000/tcp
+db              postgres:16-alpine      Up 6 minutes (healthy)        5432/tcp
+django          hirehub-django          Up 2 minutes (healthy)        8000/tcp
+fastapi         hirehub-fastapi         Up 4 minutes (healthy)        8000/tcp
+nginx           nginx:1.27-alpine       Up 4 minutes                  0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
+redis           redis:7-alpine          Up 6 minutes (healthy)        6379/tcp

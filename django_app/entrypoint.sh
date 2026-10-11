@@ -26,6 +26,8 @@ if name and pwd and not U.objects.filter(username=name).exists():
   if [ "${SEED_DEMO_DATA:-false}" = "true" ]; then
     python manage.py seed_demo || true
   fi
+  # початкова синхронізація індексу Matching Service (далі — сигнали та щогодинне завдання beat)
+  python manage.py reindex_matching || true
 fi
 
 exec "$@"
