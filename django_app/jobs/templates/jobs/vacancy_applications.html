@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block title %}Заявки{% endblock %}
+{% block content %}
+<h1>Заявки: {{ vacancy.title }}</h1>
+{% for a, status_form in rows %}
+<div class="card">
+  <b>{{ a.candidate.full_name }}</b> <span class="meta">{{ a.candidate.headline }}{% if a.candidate.city %} · {{ a.candidate.city.name }}{% endif %}</span>
+  — <span class="status {{ a.status }}">{{ a.get_status_display }}</span>
+  <div>{% for cs in a.candidate.candidate_skills.all %}<span class="tag">{{ cs.skill.name }} · {{ cs.level }}</span>{% endfor %}</div>
+  {% if a.cover_letter %}<p class="meta">{{ a.cover_letter|linebreaksbr }}</p>{% endif %}
+  {% if a.resume %}<p><a href="{{ a.resume.file.url }}">Резюме</a></p>{% endif %}
+  {% for i in a.interviews.all %}<p class="meta">Співбесіда: {{ i.scheduled_at|date:"d.m.Y H:i" }}, {{ i.location }}</p>{% endfor %}
+  {% if status_form.fields.status.choices %}
+  <form method="post" action="{% url 'jobs:application_status' a.pk %}" style="display:flex;gap:8px;align-items:center">{% csrf_token %}
+    {{ status_form.status }} <input type="submit" value="Змінити статус">
+    <a class="btn secondary" href="{% url 'jobs:interview_create' a.pk %}">Призначити співбесіду</a>
+  </form>{% endif %}
+</div>
+{% empty %}<div class="card">Заявок ще немає.</div>{% endfor %}
+<div class="card"><h2 style="margin-top:0">Рекомендовані кандидати</h2>
+  {% for r in recommended %}<p><b>{{ r.full_name }}</b> — {{ r.score_percent }}%</p>{% empty %}<p class="meta">Немає даних.</p>{% endfor %}
+</div>
+{% endblock %}
