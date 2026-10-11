@@ -1,5 +1,4 @@
 """Індексація, підбір (Жаккар/косинус), пояснення, видалення, фонова переіндексація."""
-import pytest
 
 from tests.conftest import STRONG, VACANCY, WEAK, bearer
 

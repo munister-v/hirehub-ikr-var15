@@ -33,6 +33,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.app_name,
         version='1.0.0',
+        root_path=settings.root_path,
         description='Підбір відповідностей вакансій і кандидатів за навичками (коефіцієнт Жаккара / косинусна '
                     'подібність). Індекс оновлюється сервісом Django по HTTP; статуси заявок надходять по WebSocket.',
         lifespan=lifespan,

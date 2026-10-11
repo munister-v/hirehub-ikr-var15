@@ -1,23 +1,30 @@
 """Вебінтерфейс: список/картка вакансій, кабінети кандидата й роботодавця, заявки, співбесіди."""
+from accounts.roles import is_candidate, is_employer
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count
-from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, TemplateView, UpdateView
-
-from accounts.roles import is_candidate, is_employer
 from integration.client import candidate_ws_token
 from integration.services import recommended_candidates, recommended_vacancies
 
-from .forms import (ApplicationForm, ApplicationStatusForm, CandidateProfileForm, CandidateSkillFormSet,
-                    InterviewForm, ResumeForm, VacancyForm, VacancySkillFormSet)
+from .forms import (
+    ApplicationForm,
+    ApplicationStatusForm,
+    CandidateProfileForm,
+    CandidateSkillFormSet,
+    InterviewForm,
+    ResumeForm,
+    VacancyForm,
+    VacancySkillFormSet,
+)
 from .models import Application, Candidate, Category, City, Interview, Resume, Vacancy
 from .services import cached_vacancy_ids, clean_params, vacancies_by_ids
 

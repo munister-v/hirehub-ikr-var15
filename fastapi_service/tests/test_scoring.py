@@ -1,6 +1,5 @@
 """Юніт-тести чистих функцій оцінки (без БД і HTTP)."""
 import pytest
-
 from app.services import scoring
 
 A = {'python': ('Python', 4), 'django': ('Django', 3), 'docker': ('Docker', 2)}

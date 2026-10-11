@@ -3,7 +3,6 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-
 from jobs.models import Application, Candidate, CandidateSkill, Vacancy, VacancySkill
 
 from . import tasks

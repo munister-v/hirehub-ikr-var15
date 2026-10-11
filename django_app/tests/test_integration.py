@@ -6,7 +6,6 @@ import jwt
 import pytest
 import respx
 from django.test import override_settings
-
 from integration.client import MatchingClient, MatchingUnavailable
 from integration.services import recommended_candidates, recommended_vacancies
 from jobs.models import Application, Vacancy

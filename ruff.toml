@@ -1,0 +1,12 @@
+line-length = 120
+target-version = "py312"
+extend-exclude = ["env", "migrations", "alembic/versions"]
+
+[lint]
+select = ["E", "F", "I", "B"]
+ignore = ["E501", "B008"]     # довгі рядки з коментарями українською; Depends() у аргументах — патерн FastAPI
+
+[lint.per-file-ignores]
+"django_app/config/settings/*.py" = ["F403", "F405", "E402"]
+"django_app/tests/*.py" = ["E402"]
+"fastapi_service/tests/*.py" = ["E402"]

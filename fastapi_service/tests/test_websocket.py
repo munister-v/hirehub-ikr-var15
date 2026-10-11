@@ -1,8 +1,7 @@
 """WebSocket: статус заявки доставляється кандидату; перевірка токенів."""
 import pytest
-from starlette.websockets import WebSocketDisconnect
-
 from app.core.security import ISSUER_DJANGO, create_access_token
+from starlette.websockets import WebSocketDisconnect
 
 EVENT = {'application_id': 5, 'candidate_id': 10, 'vacancy_id': 1, 'status': 'interview',
          'status_label': 'Співбесіда', 'vacancy_title': 'Python developer'}

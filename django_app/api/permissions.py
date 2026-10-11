@@ -1,7 +1,6 @@
 """Власні permissions: ролі та доступ лише до власних об'єктів (чужі — заборонені)."""
-from rest_framework import permissions
-
 from accounts.roles import is_candidate, is_employer
+from rest_framework import permissions
 
 
 class IsEmployer(permissions.BasePermission):
