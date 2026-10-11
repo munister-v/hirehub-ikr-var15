@@ -1,0 +1,29 @@
+# секрети й локальні налаштування
+.env
+.env.*
+!.env.example
+
+# віртуальні оточення, кеші, артефакти
+env/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.egg-info/
+
+# бази даних і медіа
+*.sqlite3
+*.db
+media/
+staticfiles/
+
+# службове
+logs/
+.DS_Store
+.idea/
+.vscode/
