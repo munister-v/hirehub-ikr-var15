@@ -9,6 +9,7 @@ CACHES = {'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
 PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']  # швидко в тестах
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 CELERY_TASK_ALWAYS_EAGER = True
+MATCHING_ENABLED = False          # інтеграційні тести вмикають його явно (override_settings + respx)
 MATCHING_SERVICE_URL = 'http://matching.test'
 MEDIA_ROOT = BASE_DIR / 'media_test'
 STORAGES = {
