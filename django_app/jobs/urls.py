@@ -17,5 +17,6 @@ urlpatterns = [
     path('employer/', views.EmployerDashboardView.as_view(), name='employer_dashboard'),
     path('cabinet/', views.CandidateCabinetView.as_view(), name='candidate_cabinet'),
     path('cabinet/profile/', views.CandidateProfileView.as_view(), name='candidate_profile'),
+    path('cabinet/ws-token/', views.WsTokenView.as_view(), name='ws_token'),
     path('cabinet/resume/new/', views.ResumeCreateView.as_view(), name='resume_create'),
 ]

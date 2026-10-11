@@ -169,6 +169,8 @@ CELERY_BEAT_SCHEDULE = {
 # ---------------------------------------------------------------- інтеграція з FastAPI
 MATCHING_ENABLED = env.bool('MATCHING_ENABLED', default=True)
 MATCHING_SERVICE_URL = env('MATCHING_SERVICE_URL', default='http://127.0.0.1:8006')
+# адреса, за якою браузер кандидата підключається до WebSocket сервісу (через nginx у Docker)
+MATCHING_PUBLIC_WS_URL = env('MATCHING_PUBLIC_WS_URL', default='ws://127.0.0.1:8006')
 MATCHING_TIMEOUT_SECONDS = env.float('MATCHING_TIMEOUT_SECONDS', default=3.0)
 # спільний секрет: Django підписує сервісний JWT, FastAPI перевіряє підпис
 SHARED_JWT_SECRET = env('SHARED_JWT_SECRET', default='dev-shared-jwt-secret-change-me-32chars')

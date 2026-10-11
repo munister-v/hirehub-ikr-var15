@@ -5,13 +5,15 @@ from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count
-from django.http import Http404
+from django.conf import settings
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, TemplateView, UpdateView
 
 from accounts.roles import is_candidate, is_employer
+from integration.client import candidate_ws_token
 from integration.services import recommended_candidates, recommended_vacancies
 
 from .forms import (ApplicationForm, ApplicationStatusForm, CandidateProfileForm, CandidateSkillFormSet,
@@ -292,3 +294,16 @@ class ApplyView(CandidateRequiredMixin, View):
         else:
             messages.error(request, 'Перевірте форму заявки.')
         return redirect(vacancy.get_absolute_url())
+
+
+class WsTokenView(CandidateRequiredMixin, View):
+    """JSON з короткоживучим токеном і адресою WebSocket для сторінки кабінету."""
+
+    def get(self, request):
+        candidate_id = request.user.candidate.pk
+        base = settings.MATCHING_PUBLIC_WS_URL.rstrip('/')
+        return JsonResponse({
+            'url': f'{base}/ws/applications/{candidate_id}',
+            'token': candidate_ws_token(candidate_id),
+            'candidate_id': candidate_id,
+        })

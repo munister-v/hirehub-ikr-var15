@@ -2,7 +2,8 @@
 
 Два типи токенів з одним секретом:
   * токени, виданні цим сервісом (/auth/token): iss=hirehub-matching, користувач існує в БД;
-  * сервісні токени Django: iss=hirehub-django, role=service (підписує Django спільним секретом).
+  * токени Django (iss=hirehub-django): сервісний (role=service) і короткоживучий токен кандидата
+    для WebSocket (role=candidate, claim candidate_id) — підписує Django спільним секретом.
 """
 import time
 from dataclasses import dataclass, field
@@ -68,9 +69,12 @@ async def principal_from_token(token: str, session: AsyncSession) -> Principal:
 
     claims = decode_token(token)
     if claims.get('iss') == ISSUER_DJANGO:
-        if claims['role'] != 'service':
-            raise ForbiddenError('Токен Django має містити роль service.')
-        return Principal(username=claims['sub'], role='service', claims=claims)
+        if claims['role'] == 'service':
+            return Principal(username=claims['sub'], role='service', claims=claims)
+        if claims['role'] == 'candidate' and isinstance(claims.get('candidate_id'), int):
+            # короткоживучий токен кандидата для WebSocket: дає доступ лише до його власних статусів
+            return Principal(username=claims['sub'], role='candidate', claims=claims)
+        raise ForbiddenError('Токен Django має містити роль service або candidate.')
     # токен цього сервісу: користувач має існувати й бути активним; роль беремо з БД, а не з токена
     user = await UserRepository(session).get_by_username(claims['sub'])
     if user is None or not user.is_active:
