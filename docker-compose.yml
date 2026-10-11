@@ -55,6 +55,7 @@ services:
     depends_on:
       db: {condition: service_healthy}
       redis: {condition: service_healthy}
+      fastapi: {condition: service_healthy}   # початкова індексація потребує готового Matching Service
     volumes:
       - media:/app/media
 
@@ -65,6 +66,12 @@ services:
     environment:
       <<: *django-env
       RUN_SETUP: "false"
+    healthcheck:       # образний HEALTHCHECK перевіряє HTTP — для воркера це не підходить
+      test: ["CMD-SHELL", "celery -A config inspect ping -d celery@$$HOSTNAME"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
     depends_on:
       django: {condition: service_healthy}
     volumes:
@@ -73,10 +80,13 @@ services:
   celery_beat:
     build: ./django_app
     restart: unless-stopped
-    command: celery -A config beat -l info
+    # розклад пишемо в /tmp: каталог /app належить root, контейнер працює від користувача app
+    command: celery -A config beat -l info --schedule /tmp/celerybeat-schedule
     environment:
       <<: *django-env
       RUN_SETUP: "false"
+    healthcheck:
+      disable: true
     depends_on:
       django: {condition: service_healthy}
 
