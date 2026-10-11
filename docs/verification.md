@@ -8,6 +8,7 @@
 | Тести FastAPI | `scripts/dev.sh test` | 34 passed, покриття 95 % |
 | Лінтер | `ruff check .` | All checks passed |
 | Міграції Django синхронні з моделями | `manage.py makemigrations --check --dry-run` | No changes detected |
+| CI на GitHub | PR [#8](https://github.com/munister-v/hirehub-ikr-var15/pull/8): `lint`, `test-django`, `test-fastapi`, `docker-build` | усі 4 job зелені |
 | Повний комплекс | `docker compose up --build -d` | 7 сервісів, усі healthy (`docs/compose-ps.txt`) |
 | Вхід через nginx | `curl` `/`, `/api/docs/`, `/matching/docs`, `/matching/health` | HTTP 200 |
 | Початкова індексація | `GET /matching/index/stats` | 18 вакансій, 10 кандидатів, 66+37 навичок |
