@@ -15,7 +15,7 @@
 | 9 | Тести проходять; покриття ≥ 70 %; є тест кількості SQL-запитів і тест взаємодії сервісів | ✔ | Django 57 тестів, покриття 92 %; FastAPI 34 тести, покриття 95 %; `test_list_query_count_does_not_grow_with_data`, `tests/test_integration.py` |
 | 10 | CI запускає лінтер, тести та збірку образів | ◐ | `.github/workflows/ci.yml` підготовлено й узгоджено з локальними командами; на GitHub не запускався (репозиторій не публікувався) |
 | 11 | Є ER-діаграми, схема взаємодії, колекція Postman, порівняльний аналіз Django і FastAPI | ✔ | `docs/er-*.md`, `docs/architecture.md`, `docs/postman/…`, `docs/comparison-django-vs-fastapi.md` |
-| 12 | Історія Git ≥ 15 змістовних комітів | ✔ | `git log --oneline` (25 комітів, з них 7 злиття; гілки `feature/*`, злиття `--no-ff`) |
+| 12 | Історія Git ≥ 15 змістовних комітів | ✔ | `git log --oneline` (понад 25 комітів, серед них 7 злиттів; гілки `feature/*`, злиття `--no-ff`) |
 
 ## Не виконувалось (чесно)
 
