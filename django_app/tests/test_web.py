@@ -5,7 +5,6 @@ import pytest
 from django.core.cache import cache
 from django.urls import reverse
 from django.utils import timezone
-
 from jobs.models import Application, Candidate, Company, Interview, Vacancy
 from jobs.services import filter_vacancies
 

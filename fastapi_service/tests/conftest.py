@@ -9,10 +9,9 @@ os.environ['MATCHING_ADMIN_PASSWORD'] = 'root-password-1'
 os.environ['SHARED_JWT_SECRET'] = 'test-shared-jwt-secret-with-32-plus-chars'
 
 import pytest
-from fastapi.testclient import TestClient
-
 from app.core.security import ISSUER_DJANGO, create_access_token
 from app.main import create_app
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture

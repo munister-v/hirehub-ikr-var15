@@ -3,7 +3,7 @@ from django import forms
 from django.forms import inlineformset_factory
 from django.utils import timezone
 
-from .models import (Application, Candidate, CandidateSkill, Interview, Resume, Vacancy, VacancySkill)
+from .models import Application, Candidate, CandidateSkill, Interview, Resume, Vacancy, VacancySkill
 
 
 class VacancyForm(forms.ModelForm):

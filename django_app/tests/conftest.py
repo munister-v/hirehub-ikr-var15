@@ -1,11 +1,10 @@
 """Фікстури Django-тестів: ролі, профілі, довідники, вакансії."""
 import pytest
+from accounts.roles import CANDIDATE_GROUP, EMPLOYER_GROUP
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from rest_framework.test import APIClient
-
-from accounts.roles import CANDIDATE_GROUP, EMPLOYER_GROUP
 from jobs.models import Candidate, CandidateSkill, Category, City, Company, Skill, Vacancy, VacancySkill
+from rest_framework.test import APIClient
 
 User = get_user_model()
 PASSWORD = 'pass12345!'

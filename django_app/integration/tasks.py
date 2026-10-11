@@ -3,7 +3,6 @@ import logging
 
 from celery import shared_task
 from django.conf import settings
-
 from jobs.models import Application, Candidate, Vacancy
 
 from .client import MatchingUnavailable, get_client
@@ -23,7 +22,7 @@ def _guard(task, func):
         if task.request.is_eager or task.request.retries >= MAX_RETRIES:
             logger.warning('Синхронізація пропущена: %s', exc)
             return None
-        raise task.retry(exc=exc, countdown=5 * 2 ** task.request.retries)
+        raise task.retry(exc=exc, countdown=5 * 2 ** task.request.retries) from exc
 
 
 @shared_task(bind=True, name='integration.tasks.sync_vacancy')

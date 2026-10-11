@@ -2,7 +2,7 @@
 from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import (CandidateSkillIndex, IndexedCandidate, IndexedVacancy, VacancySkillIndex)
+from app.models import CandidateSkillIndex, IndexedCandidate, IndexedVacancy, VacancySkillIndex
 
 
 def skill_key(name: str) -> str:

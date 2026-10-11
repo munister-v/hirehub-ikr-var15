@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import require_roles
 from app.db.session import get_session
-from app.schemas.indexing import (CandidateIn, IndexAck, JobAccepted, JobOut, ReindexIn, StatsOut, VacancyIn)
+from app.schemas.indexing import CandidateIn, IndexAck, JobAccepted, JobOut, ReindexIn, StatsOut, VacancyIn
 from app.services.indexing import IndexService, run_reindex
 
 # записувати в індекс можуть лише сервіс (Django) та адміністратор

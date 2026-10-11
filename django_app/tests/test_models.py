@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import IntegrityError, transaction
 from django.utils import timezone
-
 from jobs.models import Application, Interview, Resume, Vacancy
 from jobs.tasks import close_expired
 from jobs.validators import validate_resume_file
@@ -80,7 +79,8 @@ def test_close_expired_task_closes_only_expired(vacancy, company, category):
     fresh = Vacancy.objects.create(company=company, title='Fresh', description='x', category=category,
                                    status=Vacancy.Status.OPEN, closes_at=timezone.localdate() + timedelta(days=5))
     assert close_expired() == 1
-    vacancy.refresh_from_db(); fresh.refresh_from_db()
+    vacancy.refresh_from_db()
+    fresh.refresh_from_db()
     assert vacancy.status == Vacancy.Status.CLOSED and fresh.status == Vacancy.Status.OPEN
 
 

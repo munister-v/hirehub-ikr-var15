@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
 from django.db import transaction
-
 from jobs.models import Candidate, Company
 
 from .roles import CANDIDATE_GROUP, EMPLOYER_GROUP

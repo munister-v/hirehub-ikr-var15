@@ -3,12 +3,11 @@ import asyncio
 import os
 
 from alembic import context
-from sqlalchemy import pool
-from sqlalchemy.ext.asyncio import async_engine_from_config
-
+from app import models  # noqa: F401  — реєструє таблиці в Base.metadata
 from app.core.config import get_settings
 from app.db.base import Base
-from app import models  # noqa: F401  — реєструє таблиці в Base.metadata
+from sqlalchemy import pool
+from sqlalchemy.ext.asyncio import async_engine_from_config
 
 config = context.config
 target_metadata = Base.metadata
